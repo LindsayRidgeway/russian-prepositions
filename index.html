@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Russian Prepositions Practice App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    #main-container {
+      display: flex;
+      flex-direction: row;
+      gap: 20px;
+    }
+    #left-panel {
+      flex: 3;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    #right-panel {
+      flex: 1;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+    .button-group {
+      margin-bottom: 20px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .mode-button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s;
+    }
+    .mode-button:hover {
+      background-color: #45a049;
+    }
+    .quiz-section {
+      margin-top: 20px;
+    }
+    .radio-option {
+      margin: 6px 0;
+      padding: 8px;
+      border-radius: 4px;
+      transition: background-color 0.2s;
+    }
+    .radio-option:hover {
+      background-color: #f0f0f0;
+    }
+    .filter-section {
+      margin-bottom: 25px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #e0e0e0;
+    }
+    .filter-option {
+      margin: 6px 0;
+      font-size: 14px;
+    }
+    .reveal-section {
+      margin: 15px 0;
+    }
+    .reveal-section button {
+      background-color: #2196F3;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
+    .reveal-section button:hover {
+      background-color: #1976D2;
+    }
+    .repeat-section {
+      margin: 10px 0;
+    }
+    .repeat-section button {
+      background-color: #FF9800;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s;
+    }
+    .repeat-section button:hover {
+      background-color: #F57C00;
+    }
+    .submit-button {
+      background-color: #9C27B0;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 15px;
+      transition: background-color 0.3s;
+    }
+    .submit-button:hover {
+      background-color: #7B1FA2;
+    }
+    .hidden {
+      display: none;
+    }
+    #challenge {
+      font-size: 18px;
+      font-weight: bold;
+      margin: 20px 0;
+      padding: 15px;
+      background-color: #f8f9fa;
+      border-left: 4px solid #4CAF50;
+      border-radius: 4px;
+    }
+    #result {
+      margin: 15px 0;
+      padding: 10px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+    .result-correct {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    .result-incorrect {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    #score {
+      font-size: 16px;
+      font-weight: bold;
+      color: #333;
+      margin: 10px 0;
+    }
+    .filter-section h3 {
+      color: #333;
+      margin-bottom: 15px;
+      font-size: 16px;
+    }
+    footer {
+      margin-top: 40px;
+      font-size: 0.9em;
+      font-style: italic;
+      text-align: center;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <h1>Russian Prepositions Practice App</h1>
+
+  <div id="main-container">
+    <div id="left-panel">
+      <div class="button-group">
+        <button class="mode-button" id="btn1">English → Russian</button>
+        <button class="mode-button" id="btn2">Russian → English</button>
+        <button class="mode-button" id="btn3">🔊 Spoken English</button>
+        <button class="mode-button" id="btn4">🔊 Spoken Russian</button>
+      </div>
+
+      <div class="quiz-section">
+        <div id="challenge">Select filters and a quiz mode to begin</div>
+        
+        <div id="repeat-section" class="repeat-section hidden">
+          <button id="repeat-btn">🔊 Repeat</button>
+        </div>
+
+        <div id="reveal-section" class="reveal-section hidden">
+          <button id="reveal-btn">Show Choices</button>
+        </div>
+
+        <div id="choices-container" class="hidden">
+          <div id="choices"></div>
+          <div class="quiz-section">
+            <button class="submit-button" id="submit-btn">Submit Answer</button>
+          </div>
+        </div>
+
+        <div id="result"></div>
+        <div id="score"></div>
+      </div>
+    </div>
+
+    <div id="right-panel">
+      <div class="filter-section">
+        <h3>Frequency</h3>
+        <div id="frequency-container">
+          <div class="filter-option">
+            <input type="checkbox" id="common" value="common" checked>
+            <label for="common">More common</label>
+          </div>
+          <div class="filter-option">
+            <input type="checkbox" id="less-common" value="less-common">
+            <label for="less-common">Less common</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="filter-section">
+        <h3>Cases</h3>
+        <div id="case-container">
+          <div class="filter-option">
+            <input type="checkbox" name="case" value="accusative" id="acc" checked>
+            <label for="acc">Accusative</label>
+          </div>
+          <div class="filter-option">
+            <input type="checkbox" name="case" value="genitive" id="gen">
+            <label for="gen">Genitive</label>
+          </div>
+          <div class="filter-option">
+            <input type="checkbox" name="case" value="dative" id="dat">
+            <label for="dat">Dative</label>
+          </div>
+          <div class="filter-option">
+            <input type="checkbox" name="case" value="instrumental" id="inst">
+            <label for="inst">Instrumental</label>
+          </div>
+          <div class="filter-option">
+            <input type="checkbox" name="case" value="prepositional" id="prep">
+            <label for="prep">Prepositional</label>
+          </div>
+          <div class="filter-option">
+            <input type="checkbox" name="case" value="nominative" id="nom">
+            <label for="nom">Nominative</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    To contact developer: <a href="mailto:LDRidgeway@gmail.com">LDRidgeway@gmail.com</a>
+  </footer>
+
+  <script>
+    // Prepositions data organized by case and frequency
+    const prepositionsData = {
+      accusative: {
+        common: [
+          { english: "I'm going to the store", russian: "Я иду в магазин", preposition: "в", meaning: "to/into (direction)" },
+          { english: "We're walking to the park", russian: "Мы идём в парк", preposition: "в", meaning: "to/into (direction)" },
+          { english: "She's looking at the cat", russian: "Она смотрит на кота", preposition: "на", meaning: "at/onto" },
+          { english: "He's reading for an hour", russian: "Он читает на час", preposition: "на", meaning: "for (time duration)" },
+          { english: "I'm going to work", russian: "Я иду на работу", preposition: "на", meaning: "to (work/event)" },
+          { english: "We're going through the forest", russian: "Мы идём через лес", preposition: "через", meaning: "through/across" },
+          { english: "They're walking behind the house", russian: "Они идут за дом", preposition: "за", meaning: "behind/beyond" },
+          { english: "I'm putting the book under the table", russian: "Я кладу книгу под стол", preposition: "под", meaning: "under" },
+          { english: "She's going to the concert", russian: "Она идёт на концерт", preposition: "на", meaning: "to (event)" },
+          { english: "We're driving to the city", russian: "Мы едем в город", preposition: "в", meaning: "to/into" }
+        ],
+        "less-common": [
+          { english: "He's walking around the building", russian: "Он идёт вокруг здания", preposition: "вокруг", meaning: "around" },
+          { english: "I'm doing this for you", russian: "Я делаю это за тебя", preposition: "за", meaning: "for (behalf of)" },
+          { english: "She's going against the rules", russian: "Она идёт против правил", preposition: "против", meaning: "against" },
+          { english: "We're walking along the river", russian: "Мы идём вдоль реки", preposition: "вдоль", meaning: "along" },
+          { english: "He's working despite the illness", russian: "Он работает несмотря на болезнь", preposition: "несмотря на", meaning: "despite" },
+          { english: "I'm climbing up the mountain", russian: "Я поднимаюсь на гору", preposition: "на", meaning: "up onto" }
+        ]
+      },
+      genitive: {
+        common: [
+          { english: "I'm coming from the store", russian: "Я иду из магазина", preposition: "из", meaning: "from/out of" },
+          { english: "The book is from the library", russian: "Книга из библиотеки", preposition: "из", meaning: "from" },
+          { english: "We're walking from the park", russian: "Мы идём от парка", preposition: "от", meaning: "from/away from" },
+          { english: "She's near the school", russian: "Она около школы", preposition: "около", meaning: "near/around" },
+          { english: "He's standing near the house", russian: "Он стоит у дома", preposition: "у", meaning: "near/by/at" },
+          { english: "The cat is under the table", russian: "Кот под столом", preposition: "под", meaning: "under" },
+          { english: "I'm going without money", russian: "Я иду без денег", preposition: "без", meaning: "without" },
+          { english: "She's working until evening", russian: "Она работает до вечера", preposition: "до", meaning: "until/up to" },
+          { english: "We're sitting opposite the theater", russian: "Мы сидим напротив театра", preposition: "напротив", meaning: "opposite" },
+          { english: "He's walking along the street", russian: "Он идёт по улице", preposition: "по", meaning: "along/down" }
+        ],
+        "less-common": [
+          { english: "I'm going instead of my brother", russian: "Я иду вместо брата", preposition: "вместо", meaning: "instead of" },
+          { english: "She's working because of the need", russian: "Она работает из-за нужды", preposition: "из-за", meaning: "because of" },
+          { english: "We're sitting around the table", russian: "Мы сидим вокруг стола", preposition: "вокруг", meaning: "around" },
+          { english: "He's reading during the break", russian: "Он читает во время перерыва", preposition: "во время", meaning: "during" },
+          { english: "I'm working for the sake of family", russian: "Я работаю ради семьи", preposition: "ради", meaning: "for the sake of" },
+          { english: "She's coming from the side of the forest", russian: "Она идёт со стороны леса", preposition: "со стороны", meaning: "from the direction of" }
+        ]
+      },
+      dative: {
+        common: [
+          { english: "I'm going to my friend", russian: "Я иду к другу", preposition: "к", meaning: "to/toward (person)" },
+          { english: "We're walking toward the river", russian: "Мы идём к реке", preposition: "к", meaning: "toward" },
+          { english: "She's walking along the path", russian: "Она идёт по дороге", preposition: "по", meaning: "along/down" },
+          { english: "He's distributed by age", russian: "Он распределён по возрасту", preposition: "по", meaning: "by/according to" },
+          { english: "I'm studying Russian", russian: "Я изучаю русский", preposition: "по", meaning: "subject of study" },
+          { english: "We're going to the doctor", russian: "Мы идём к врачу", preposition: "к", meaning: "to (person)" },
+          { english: "She's walking toward the forest", russian: "Она идёт к лесу", preposition: "к", meaning: "toward" },
+          { english: "He's hitting the ball", russian: "Он бьёт по мячу", preposition: "по", meaning: "at/on (striking)" }
+        ],
+        "less-common": [
+          { english: "I'm going according to the schedule", russian: "Я иду согласно расписанию", preposition: "согласно", meaning: "according to" },
+          { english: "We're approaching the deadline", russian: "Мы приближаемся к сроку", preposition: "к", meaning: "toward (time)" },
+          { english: "She's going contrary to advice", russian: "Она идёт вопреки совету", preposition: "вопреки", meaning: "contrary to" },
+          { english: "He's walking thanks to help", russian: "Он идёт благодаря помощи", preposition: "благодаря", meaning: "thanks to" }
+        ]
+      },
+      instrumental: {
+        common: [
+          { english: "I'm writing with a pen", russian: "Я пишу ручкой", preposition: "", meaning: "with (instrument)" },
+          { english: "We're going with friends", russian: "Мы идём с друзьями", preposition: "с", meaning: "with (together)" },
+          { english: "She's standing behind the tree", russian: "Она стоит за деревом", preposition: "за", meaning: "behind" },
+          { english: "He's walking under the bridge", russian: "Он идёт под мостом", preposition: "под", meaning: "under" },
+          { english: "I'm sitting between the windows", russian: "Я сижу между окнами", preposition: "между", meaning: "between" },
+          { english: "We're standing before the building", russian: "Мы стоим перед зданием", preposition: "перед", meaning: "in front of/before" },
+          { english: "She's walking above the clouds", russian: "Она летит над облаками", preposition: "над", meaning: "above/over" }
+        ],
+        "less-common": [
+          { english: "I'm satisfied with the result", russian: "Я доволен результатом", preposition: "", meaning: "with (satisfaction)" },
+          { english: "We're connected with the past", russian: "Мы связаны с прошлым", preposition: "с", meaning: "with (connection)" },
+          { english: "He's busy with work", russian: "Он занят работой", preposition: "", meaning: "with (occupied)" },
+          { english: "She's walking along with her sister", russian: "Она идёт вместе с сестрой", preposition: "вместе с", meaning: "together with" }
+        ]
+      },
+      prepositional: {
+        common: [
+          { english: "I'm sitting in the room", russian: "Я сижу в комнате", preposition: "в", meaning: "in (location)" },
+          { english: "The book is on the table", russian: "Книга на столе", preposition: "на", meaning: "on (surface)" },
+          { english: "We're talking about the movie", russian: "Мы говорим о фильме", preposition: "о", meaning: "about" },
+          { english: "She's working at the factory", russian: "Она работает на заводе", preposition: "на", meaning: "at (workplace)" },
+          { english: "He's studying at the university", russian: "Он учится в университете", preposition: "в", meaning: "at (institution)" },
+          { english: "I'm thinking about the problem", russian: "Я думаю о проблеме", preposition: "о", meaning: "about" },
+          { english: "We're standing at the station", russian: "Мы стоим на станции", preposition: "на", meaning: "at (transport hub)" },
+          { english: "She's sitting in the car", russian: "Она сидит в машине", preposition: "в", meaning: "in (vehicle)" }
+        ],
+        "less-common": [
+          { english: "I'm dreaming about vacation", russian: "Я мечтаю об отпуске", preposition: "о", meaning: "about (dreams)" },
+          { english: "We're talking about the weather", russian: "Мы говорим о погоде", preposition: "о", meaning: "about (topic)" },
+          { english: "He's working upon request", russian: "Он работает по просьбе", preposition: "по", meaning: "upon/at" },
+          { english: "She's located at the edge", russian: "Она находится при крае", preposition: "при", meaning: "at/by/near" }
+        ]
+      },
+      nominative: {
+        common: [],
+        "less-common": [
+          { english: "I walk like a soldier", russian: "Я хожу как солдат", preposition: "как", meaning: "like/as" }
+        ]
+      }
+    };
+
+    // App state
+    let currentCorrectAnswer = null;
+    let currentRound = [];
+    let currentIndex = 0;
+    let score = 0;
+    let currentMode = "en-to-ru";
+    let currentChallengeText = "";
+    let currentLanguage = "en-US";
+
+    // Speech synthesis
+    function speak(text, lang = "en-US") {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = lang;
+      utterance.rate = 0.9;
+      speechSynthesis.speak(utterance);
+    }
+
+    // Filter functions
+    function getSelectedFrequencies() {
+      const checkboxes = document.querySelectorAll('#frequency-container input[type="checkbox"]:checked');
+      return Array.from(checkboxes).map(cb => cb.value);
+    }
+
+    function getSelectedCases() {
+      const checkboxes = document.querySelectorAll('#case-container input[type="checkbox"]:checked');
+      return Array.from(checkboxes).map(cb => cb.value);
+    }
+
+    // Data flattening function
+    function flattenPrepositionsData(selectedFrequencies, selectedCases) {
+      let flatData = [];
+      
+      selectedCases.forEach(caseName => {
+        if (prepositionsData[caseName]) {
+          selectedFrequencies.forEach(frequency => {
+            if (prepositionsData[caseName][frequency]) {
+              prepositionsData[caseName][frequency].forEach(item => {
+                flatData.push({
+                  case: caseName,
+                  frequency: frequency,
+                  english: item.english,
+                  russian: item.russian,
+                  preposition: item.preposition,
+                  meaning: item.meaning
+                });
+              });
+            }
+          });
+        }
+      });
+      
+      return flatData;
+    }
+
+    // Utility functions
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    function hideAllQuizElements() {
+      document.getElementById('reveal-section').classList.add('hidden');
+      document.getElementById('choices-container').classList.add('hidden');
+      document.getElementById('repeat-section').classList.add('hidden');
+      document.getElementById('result').innerText = '';
+      document.getElementById('score').innerText = '';
+    }
+
+    // Main quiz logic
+    function startNewRound(mode) {
+      const selectedFrequencies = getSelectedFrequencies();
+      const selectedCases = getSelectedCases();
+      
+      if (selectedFrequencies.length === 0) {
+        document.getElementById('challenge').innerText = 'Please select at least one frequency level.';
+        hideAllQuizElements();
+        return;
+      }
+      
+      if (selectedCases.length === 0) {
+        document.getElementById('challenge').innerText = 'Please select at least one case.';
+        hideAllQuizElements();
+        return;
+      }
+
+      const availableData = flattenPrepositionsData(selectedFrequencies, selectedCases);
+
+      if (availableData.length < 3) {
+        document.getElementById('challenge').innerText = `Not enough data for selected filters. Found ${availableData.length} items, need at least 3.`;
+        hideAllQuizElements();
+        return;
+      }
+
+      currentMode = mode;
+      score = 0;
+      currentIndex = 0;
+      document.getElementById('result').innerText = '';
+      document.getElementById('score').innerText = 'Score: 0 for 0';
+
+      shuffleArray(availableData);
+      currentRound = availableData.slice(0, Math.min(10, availableData.length));
+      showCurrentChallenge();
+    }
+
+    function showCurrentChallenge() {
+      const challenge = currentRound[currentIndex];
+      const selectedFrequencies = getSelectedFrequencies();
+      const selectedCases = getSelectedCases();
+      const allOptions = flattenPrepositionsData(selectedFrequencies, selectedCases);
+      
+      let challengeText, correct, wrongField, lang;
+
+      if (currentMode === "en-to-ru" || currentMode === "spoken-en-to-ru") {
+        challengeText = challenge.english;
+        correct = challenge.russian;
+        wrongField = "russian";
+        lang = "en-US";
+      } else {
+        challengeText = challenge.russian;
+        correct = challenge.english;
+        wrongField = "english";
+        lang = "ru-RU";
+      }
+
+      currentCorrectAnswer = correct;
+      currentChallengeText = challengeText;
+      currentLanguage = lang;
+      document.getElementById('result').innerText = '';
+
+      // Hide choices initially
+      document.getElementById('choices-container').classList.add('hidden');
+      document.getElementById('reveal-section').classList.remove('hidden');
+
+      if (currentMode.startsWith("spoken")) {
+        document.getElementById('challenge').innerText = '🔊 Listen carefully...';
+        document.getElementById('repeat-section').classList.remove('hidden');
+        speak(challengeText, lang);
+      } else {
+        document.getElementById('challenge').innerText = challengeText;
+        document.getElementById('repeat-section').classList.add('hidden');
+      }
+
+      // Prepare choices
+      const decoys = allOptions
+        .filter(item => item[wrongField] !== correct)
+        .map(item => item[wrongField]);
+      
+      shuffleArray(decoys);
+
+      const choices = [...decoys.slice(0, Math.min(allOptions.length - 1, 9)), correct];
+      shuffleArray(choices);
+
+      const choicesEl = document.getElementById('choices');
+      choicesEl.innerHTML = '';
+      choices.forEach((choice, index) => {
+        const div = document.createElement('div');
+        div.className = 'radio-option';
+        div.innerHTML = `<input type="radio" name="answer" value="${choice}" id="opt${index}"> <label for="opt${index}">${choice}</label>`;
+        choicesEl.appendChild(div);
+      });
+    }
+
+    // Event listeners
+    document.getElementById('btn1').addEventListener('click', () => {
+      startNewRound("en-to-ru");
+    });
+
+    document.getElementById('btn2').addEventListener('click', () => {
+      startNewRound("ru-to-en");
+    });
+
+    document.getElementById('btn3').addEventListener('click', () => {
+      startNewRound("spoken-en-to-ru");
+    });
+
+    document.getElementById('btn4').addEventListener('click', () => {
+      startNewRound("spoken-ru-to-en");
+    });
+
+    document.getElementById('reveal-btn').addEventListener('click', () => {
+      document.getElementById('reveal-section').classList.add('hidden');
+      document.getElementById('choices-container').classList.remove('hidden');
+    });
+
+    document.getElementById('repeat-btn').addEventListener('click', () => {
+      speak(currentChallengeText, currentLanguage);
+    });
+
+    document.getElementById('submit-btn').addEventListener('click', () => {
+      const selected = document.querySelector('input[name="answer"]:checked');
+      const resultEl = document.getElementById('result');
+      
+      if (!selected) {
+        resultEl.innerText = 'Please select an answer.';
+        resultEl.className = '';
+        return;
+      }
+
+      if (selected.value === currentCorrectAnswer) {
+        score++;
+        resultEl.innerText = 'Correct!';
+        resultEl.className = 'result-correct';
+      } else {
+        resultEl.innerText = `Incorrect. Correct answer: ${currentCorrectAnswer}`;
+        resultEl.className = 'result-incorrect';
+      }
+
+      document.getElementById('score').innerText = `Score: ${score} for ${currentIndex + 1}`;
+
+      currentIndex++;
+      if (currentIndex < currentRound.length) {
+        setTimeout(showCurrentChallenge, 2000);
+      } else {
+        setTimeout(() => {
+          document.getElementById('challenge').innerText = `Round complete! Final score: ${score}/${currentRound.length}`;
+          hideAllQuizElements();
+        }, 2000);
+      }
+    });
+  </script>
+</body>
+</html>
